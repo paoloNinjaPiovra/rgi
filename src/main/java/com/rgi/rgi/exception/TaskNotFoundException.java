@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.UUID;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
+@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Task not found")
 public class TaskNotFoundException extends Exception {
 
     public TaskNotFoundException(String code) {

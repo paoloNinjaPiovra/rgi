@@ -23,7 +23,6 @@ import java.util.Set;
 @Service
 public class TaskServiceImpl implements TaskService {
 
-
     @Autowired
     TaskRepository taskRepository;
 
