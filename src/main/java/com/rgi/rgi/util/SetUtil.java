@@ -1,4 +1,4 @@
-package com.rgi.rgi;
+package com.rgi.rgi.util;
 
 import com.rgi.rgi.entity.User;
 
