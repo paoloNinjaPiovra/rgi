@@ -1,7 +1,6 @@
 package com.rgi.rgi.configs;
 
 import com.google.common.collect.ImmutableList;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -11,8 +10,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import javax.servlet.annotation.WebServlet;
 
 @Configuration
 @EnableWebSecurity
