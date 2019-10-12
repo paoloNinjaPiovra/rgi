@@ -7,6 +7,5 @@ public enum Status {
     BLOCKED,
     SUSPENDED,
     NEW,
-    TERMINATED,
     CLOSED
 }
