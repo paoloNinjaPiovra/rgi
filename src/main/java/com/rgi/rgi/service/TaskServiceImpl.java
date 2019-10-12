@@ -139,15 +139,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
-    public Task save(String userSession, TaskForm newTask) throws UserNotFoundException, TaskFoundException {
+    public Task save(String userSession, TaskForm newTask) throws UserNotFoundException {
         log.info("taskService: save begin... ");
         if (StringUtils.isNotEmpty(userSession)) {
-            Task task = taskRepository.findTaskByCode(newTask.getCode());
-            if (null != task) {
-                log.info("taskService: save ...end - task " + newTask.getCode() + " found!");
-                throw new TaskFoundException(newTask.getCode());
-            }
             Set<User> users = newTask.getUsers();
+            Task task = new Task(newTask.getName(), newTask.getDescription());
             User user;
             Set<User> associatedUsers = new HashSet<>();
             for(User currentUser: users) {
@@ -196,6 +192,7 @@ public class TaskServiceImpl implements TaskService {
             log.info("taskService: " + methodName + " ...end - no task found!");
             throw new TaskNotFoundException(userSession);
         }
+        log.info("taskService: " + methodName + " : " + task.getCode() + " : " + task.getName() + " : "  + task.getDescription());
         return task;
     }
 }
