@@ -3,11 +3,11 @@ package com.rgi.rgi.service;
 import com.rgi.rgi.entity.Task;
 import com.rgi.rgi.entity.User;
 import com.rgi.rgi.enums.Status;
-import com.rgi.rgi.exception.TaskFoundException;
 import com.rgi.rgi.exception.TaskNotFoundException;
 import com.rgi.rgi.exception.UserNotFoundException;
 import com.rgi.rgi.model.TaskDetail;
 import com.rgi.rgi.model.TaskForm;
+import com.rgi.rgi.model.TaskInterface;
 import com.rgi.rgi.model.TaskList;
 import com.rgi.rgi.repository.TaskRepository;
 import com.rgi.rgi.repository.UserRepository;
@@ -96,13 +96,7 @@ public class TaskServiceImpl implements TaskService {
                 log.info("taskService: saveOrUpdate ... end!");
                 return taskRepository.save(task);
             } else {
-                task = new Task();
-                task.setUsers(newTask.getUsers());
-                task.setStatus(newTask.getStatus());
-                task.setName(newTask.getName());
-                task.setDescription(newTask.getDescription());
-                log.info("taskService: saveOrUpdate ... end!");
-                return taskRepository.save(task);
+                return saveTask(newTask, "saveOrUpdate");
             }
         } else {
             log.info("taskService: saveOrUpdate ...end - no user found!");
@@ -123,8 +117,20 @@ public class TaskServiceImpl implements TaskService {
                     task.setName(newTask.getName());
                 if (!task.getStatus().equals(newTask.getStatus()))
                     task.setStatus(newTask.getStatus());
-                if (!task.getUsers().equals(newTask.getUsers()))
-                    task.setUsers(newTask.getUsers());
+                if (!task.getUsers().equals(newTask.getUsers())) {
+                    User user;
+                    Set<User> newUsers = new HashSet<>();
+                    for (User currentUser : newTask.getUsers()) {
+                        user = userRepository.findUserByUserCode(currentUser.getCode());
+                        if (null == user) {
+                            user = userRepository.save(currentUser);
+                        }
+                        newUsers.add(user);
+                    }
+                    task.setUsers(newUsers);
+                } else {
+                    task.setUsers(task.getUsers());
+                }
                 log.info("taskService: patch ... end!");
                 return taskRepository.save(task);
             } else {
@@ -142,20 +148,7 @@ public class TaskServiceImpl implements TaskService {
     public Task save(String userSession, TaskForm newTask) throws UserNotFoundException {
         log.info("taskService: save begin... ");
         if (StringUtils.isNotEmpty(userSession)) {
-            Set<User> users = newTask.getUsers();
-            Task task = new Task(newTask.getName(), newTask.getDescription());
-            User user;
-            Set<User> associatedUsers = new HashSet<>();
-            for(User currentUser: users) {
-                user = userRepository.findUserByName(currentUser.getName());
-                if (null == user) {
-                    user = userRepository.save(new User(currentUser.getName()));
-                }
-                associatedUsers.add(user);
-            }
-            task.setUsers(associatedUsers);
-            log.info("taskService: save ... end!");
-            return taskRepository.save(task);
+            return saveTask(newTask, "save");
         } else {
             log.info("taskService: save ...end - no user found!");
             throw new UserNotFoundException(userSession);
@@ -194,5 +187,23 @@ public class TaskServiceImpl implements TaskService {
         }
         log.info("taskService: " + methodName + " : " + task.getCode() + " : " + task.getName() + " : "  + task.getDescription());
         return task;
+    }
+
+    private Task saveTask(TaskInterface newTask, String method) {
+        Task task;
+        Set<User> users = newTask.getUsers();
+        task = new Task(newTask.getName(), newTask.getDescription());
+        User user;
+        Set<User> associatedUsers = new HashSet<>();
+        for(User currentUser: users) {
+            user = userRepository.findUserByName(currentUser.getName());
+            if (null == user) {
+                user = userRepository.save(new User(currentUser.getName()));
+            }
+            associatedUsers.add(user);
+        }
+        task.setUsers(associatedUsers);
+        log.info("taskService: " + method + " ... end!");
+        return taskRepository.save(task);
     }
 }

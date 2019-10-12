@@ -19,9 +19,6 @@ public class User implements Serializable {
     @Column(name="NAME", nullable = false)
     private String name;
 
-    //@ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
-    //private Set<Task> tasks = new HashSet<>();
-
     public User() {
     }
 

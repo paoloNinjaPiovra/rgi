@@ -1,7 +1,5 @@
 package com.rgi.rgi;
 
-import com.rgi.rgi.entity.Task;
-import com.rgi.rgi.entity.User;
 import com.rgi.rgi.exception.UserNotFoundException;
 import com.rgi.rgi.model.TaskList;
 import com.rgi.rgi.repository.TaskRepository;
@@ -11,9 +9,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class TaskServiceTest extends AbstractTaskTest {
 

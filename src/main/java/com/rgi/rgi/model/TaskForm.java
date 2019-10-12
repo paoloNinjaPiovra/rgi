@@ -3,9 +3,8 @@ package com.rgi.rgi.model;
 import com.rgi.rgi.entity.User;
 
 import java.util.Set;
-import java.util.UUID;
 
-public class TaskForm extends Task {
+public class TaskForm extends AbstractTask {
 
     public TaskForm() {
     }
