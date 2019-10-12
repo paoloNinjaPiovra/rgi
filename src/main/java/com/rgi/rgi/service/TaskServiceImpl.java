@@ -13,13 +13,15 @@ import com.rgi.rgi.repository.UserRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Service
 public class TaskServiceImpl implements TaskService {
-
 
     @Autowired
     TaskRepository taskRepository;
@@ -28,6 +30,7 @@ public class TaskServiceImpl implements TaskService {
     UserRepository userRepository;
 
     @Override
+    @Transactional(rollbackFor = { UserNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, readOnly = true, isolation = Isolation.READ_COMMITTED)
     public TaskList getTaskList(String userSession) throws UserNotFoundException {
         if (StringUtils.isNotEmpty(userSession)) {
             TaskList taskList = new TaskList(taskRepository.findTask(userSession));
@@ -38,11 +41,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDetail getTask(String userSession, String taskCode) throws UserNotFoundException {
+    @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, readOnly = true, isolation = Isolation.READ_COMMITTED)
+    public TaskDetail getTask(String userSession, String taskCode) throws UserNotFoundException, TaskNotFoundException {
         if (StringUtils.isNotEmpty(userSession)) {
             Task task = taskRepository.findTaskByCode(taskCode, userSession);
             if (null == task)
-                return new TaskDetail();
+                throw new TaskNotFoundException(userSession);
             Set<User> users = new HashSet<>(userRepository.findUserByTaskCode(taskCode, userSession));
             TaskDetail taskDetail = new TaskDetail();
             taskDetail.setCode(task.getCode());
@@ -57,6 +61,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public Task deleteTask(String userSession, String taskCode) throws UserNotFoundException, TaskNotFoundException {
         if (StringUtils.isNotEmpty(userSession)) {
             Task task = taskRepository.findTaskByCode(taskCode, userSession);
@@ -70,6 +75,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public Task saveOrUpdate(String userSession, TaskDetail newTask, String taskCode) throws UserNotFoundException {
         if (StringUtils.isNotEmpty(userSession)) {
             Task task = taskRepository.findTaskByCode(taskCode, userSession);
@@ -93,6 +99,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public Task patch(String userSession, Task newTask, String taskCode) throws UserNotFoundException, TaskNotFoundException {
         if (StringUtils.isNotEmpty(userSession)) {
             Task task = taskRepository.findTaskByCode(taskCode, userSession);
@@ -115,10 +122,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task save(String userSession, TaskForm newTask) throws UserNotFoundException {
+    @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    public Task save(String userSession, TaskForm newTask) throws UserNotFoundException, TaskNotFoundException {
         if (StringUtils.isNotEmpty(userSession) && userSession.equalsIgnoreCase("user-session")) {
             if (null != taskRepository.findTaskByCode(newTask.getCode(), userSession))
-                throw new UserNotFoundException(userSession);
+                throw new TaskNotFoundException(userSession);
             Task task = new Task(newTask.getName(), newTask.getDescription());
             Set<User> users = newTask.getUsers();
             User user;
@@ -138,6 +146,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public Task closeTask(String userSession, String taskCode) throws UserNotFoundException, TaskNotFoundException {
         if (StringUtils.isNotEmpty(userSession)) {
             Task task = taskRepository.findTaskByCode(taskCode, userSession);
