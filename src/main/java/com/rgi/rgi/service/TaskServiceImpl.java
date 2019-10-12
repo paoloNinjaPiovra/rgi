@@ -69,13 +69,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
-    public Task delete(String userSession, String taskCode) throws UserNotFoundException, TaskNotFoundException {
+    public void delete(String userSession, String taskCode) throws UserNotFoundException, TaskNotFoundException {
         log.info("taskService: delete begin... ");
         if (StringUtils.isNotEmpty(userSession)) {
             Task task = getTask(userSession, taskCode, "delete");
             taskRepository.delete(task);
             log.info("taskService: delete ... end!");
-            return task;
         } else {
             log.info("taskService: delete ...end - no user found!");
             throw new UserNotFoundException(userSession);

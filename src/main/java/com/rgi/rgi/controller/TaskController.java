@@ -46,13 +46,13 @@ public class TaskController {
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/task/{code}")
-    public Task delete(@RequestHeader("user-session") String userSession,
+    public void delete(@RequestHeader("user-session") String userSession,
                            @PathVariable("code") String taskCode)
             throws UserNotFoundException, TaskNotFoundException {
 
         log.info("deleteTask begin... ");
 
-        return taskService.delete(userSession, taskCode);
+        taskService.delete(userSession, taskCode);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -93,7 +93,7 @@ public class TaskController {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/task/{code}/close")
     public Task close(@RequestHeader("user-session") String userSession,
-                          @PathVariable("code") String taskCode)
+                      @PathVariable("code") String taskCode)
             throws UserNotFoundException, TaskNotFoundException {
 
         log.info("closeTask begin... ");
