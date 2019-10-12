@@ -168,7 +168,7 @@ public class TaskRepositoryTest {
     @Test
     @Transactional
     public void findTaskByCodeTest() {
-        Task task = taskRepository.findTaskByCode("t5be48d5-ae7c-4816-a210-9c984cf760a0", "u5be48d5-ae7c-4816-a210-9c984cf760a0");
+        Task task = taskRepository.findTaskByCode("t5be48d5-ae7c-4816-a210-9c984cf760a0");
         List<User> userList = task.getUsers().stream().collect(Collectors.toList());
         Assert.assertTrue(userList.get(0).getName().equals("user"));
         Assert.assertTrue(userList.get(0).getCode().equals("u5be48d5-ae7c-4816-a210-9c984cf760a0"));
@@ -182,14 +182,7 @@ public class TaskRepositoryTest {
     @Test
     @Transactional
     public void findTaskByCodeTestKoForTaskCode() {
-        Task task = taskRepository.findTaskByCode("t5be48d5-ae7c-4816-a210-9c984cf760aX", "u5be48d5-ae7c-4816-a210-9c984cf760a0");
-        Assert.assertTrue(task == null);
-    }
-
-    @Test
-    @Transactional
-    public void findTaskByCodeTestKoForUserCode() {
-        Task task = taskRepository.findTaskByCode("t5be48d5-ae7c-4816-a210-9c984cf760a0", "u5be48d5-ae7c-4816-a210-9c984cf760aX");
+        Task task = taskRepository.findTaskByCode("t5be48d5-ae7c-4816-a210-9c984cf760aX");
         Assert.assertTrue(task == null);
     }
 }

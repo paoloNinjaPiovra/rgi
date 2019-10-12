@@ -9,6 +9,8 @@ import com.rgi.rgi.model.TaskList;
 
 import com.rgi.rgi.service.TaskService;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,30 +18,41 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class TaskController {
 
+    private static final Logger log = LoggerFactory.getLogger(TaskController.class);
+
     @Autowired
     TaskService taskService;
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/task")
-    public TaskList getTaskList(@RequestHeader("user-session") String userSession)
+    public TaskList list(@RequestHeader("user-session") String userSession)
             throws UserNotFoundException {
-        return taskService.getTaskList(userSession);
+
+        log.info("listTask begin...");
+
+        return taskService.list(userSession);
     }
 
     @ResponseStatus(HttpStatus.FOUND)
     @GetMapping("/task/{code}")
-    public TaskDetail getTask(@RequestHeader("user-session") String userSession,
+    public TaskDetail get(@RequestHeader("user-session") String userSession,
                               @PathVariable("code") String taskCode)
             throws UserNotFoundException, TaskNotFoundException {
-        return taskService.getTask(userSession, taskCode);
+
+        log.info("getTask begin... ");
+
+        return taskService.get(userSession, taskCode);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/task/{code}")
-    public Task deleteTask(@RequestHeader("user-session") String userSession,
+    public Task delete(@RequestHeader("user-session") String userSession,
                            @PathVariable("code") String taskCode)
             throws UserNotFoundException, TaskNotFoundException {
-        return taskService.deleteTask(userSession, taskCode);
+
+        log.info("deleteTask begin... ");
+
+        return taskService.delete(userSession, taskCode);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -47,7 +60,10 @@ public class TaskController {
     public Task saveOrUpdate(@RequestHeader("user-session") String userSession,
                              @RequestBody TaskDetail newTask,
                              @PathVariable("code") String taskCode)
-            throws UserNotFoundException {
+            throws UserNotFoundException, TaskNotFoundException {
+
+        log.info("saveOrUpdateTask begin... ");
+
         return taskService.saveOrUpdate(userSession, newTask, taskCode);
     }
 
@@ -57,6 +73,9 @@ public class TaskController {
                       @RequestBody Task newTask,
                       @PathVariable("code") String taskCode)
             throws UserNotFoundException, TaskNotFoundException {
+
+        log.info("patchTask begin...");
+
         return taskService.patch(userSession, newTask, taskCode);
     }
 
@@ -65,14 +84,20 @@ public class TaskController {
     public Task save(@RequestHeader("user-session") String userSession,
                      @RequestBody TaskForm newTask)
             throws UserNotFoundException, TaskNotFoundException {
+
+        log.info("saveTask begin... ");
+
         return taskService.save(userSession, newTask);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/task/{code}/close")
-    public Task closeTask(@RequestHeader("user-session") String userSession,
+    public Task close(@RequestHeader("user-session") String userSession,
                           @PathVariable("code") String taskCode)
             throws UserNotFoundException, TaskNotFoundException {
-        return taskService.closeTask(userSession, taskCode);
+
+        log.info("closeTask begin... ");
+
+        return taskService.close(userSession, taskCode);
     }
 }

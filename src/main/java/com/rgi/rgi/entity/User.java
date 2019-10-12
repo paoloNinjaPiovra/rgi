@@ -19,8 +19,8 @@ public class User implements Serializable {
     @Column(name="NAME", nullable = false)
     private String name;
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
-    private Set<Task> tasks = new HashSet<>();
+    //@ManyToMany(mappedBy = "users", fetch = FetchType.LAZY)
+    //private Set<Task> tasks = new HashSet<>();
 
     public User() {
     }
@@ -37,13 +37,13 @@ public class User implements Serializable {
         User user = (User) o;
         return id.equals(user.id) &&
                 Objects.equals(code, user.code) &&
-                Objects.equals(name, user.name) &&
-                Objects.equals(tasks, user.tasks);
+                Objects.equals(name, user.name) /*&&
+                Objects.equals(tasks, user.tasks)*/;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, code, name, tasks);
+        return Objects.hash(id, code, name/*, tasks*/);
     }
 
     public Long getId() {
@@ -70,11 +70,11 @@ public class User implements Serializable {
         this.name = name;
     }
 
-    public Set<Task> getTasks() {
+    /*public Set<Task> getTasks() {
         return tasks;
     }
 
     public void setTasks(Set<Task> tasks) {
         this.tasks = tasks;
-    }
+    }*/
 }

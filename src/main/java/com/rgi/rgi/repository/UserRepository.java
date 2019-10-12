@@ -14,7 +14,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
     @Query(value = "SELECT user FROM User user WHERE user.code = :userCode")
     User findUserByUserCode(String userCode);
 
-    @Query(value = "SELECT user FROM User user JOIN user.tasks task WHERE task.code = :taskCode and user.code = :userCode")
+    @Query(value = "SELECT user FROM Task task JOIN task.users user WHERE task.code = :taskCode and user.code = :userCode")
     List<User> findUserByTaskCode(String taskCode, String userCode);
 
 }
