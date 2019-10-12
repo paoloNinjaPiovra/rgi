@@ -1,6 +1,7 @@
 package com.rgi.rgi.controller;
 
 import com.rgi.rgi.entity.Task;
+import com.rgi.rgi.exception.TaskFoundException;
 import com.rgi.rgi.exception.TaskNotFoundException;
 import com.rgi.rgi.exception.UserNotFoundException;
 import com.rgi.rgi.model.TaskDetail;
@@ -83,7 +84,7 @@ public class TaskController {
     @PostMapping("/task")
     public Task save(@RequestHeader("user-session") String userSession,
                      @RequestBody TaskForm newTask)
-            throws UserNotFoundException, TaskNotFoundException {
+            throws UserNotFoundException, TaskNotFoundException, TaskFoundException {
 
         log.info("saveTask begin... ");
 

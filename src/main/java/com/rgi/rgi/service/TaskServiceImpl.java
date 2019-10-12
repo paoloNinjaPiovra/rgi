@@ -3,6 +3,7 @@ package com.rgi.rgi.service;
 import com.rgi.rgi.entity.Task;
 import com.rgi.rgi.entity.User;
 import com.rgi.rgi.enums.Status;
+import com.rgi.rgi.exception.TaskFoundException;
 import com.rgi.rgi.exception.TaskNotFoundException;
 import com.rgi.rgi.exception.UserNotFoundException;
 import com.rgi.rgi.model.TaskDetail;
@@ -138,10 +139,14 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
-    public Task save(String userSession, TaskForm newTask) throws UserNotFoundException, TaskNotFoundException {
+    public Task save(String userSession, TaskForm newTask) throws UserNotFoundException, TaskFoundException {
         log.info("taskService: save begin... ");
-        if (StringUtils.isNotEmpty(userSession) && userSession.equalsIgnoreCase("user-session")) {
-            Task task = getTask(userSession, newTask.getCode(), "save");
+        if (StringUtils.isNotEmpty(userSession)) {
+            Task task = taskRepository.findTaskByCode(newTask.getCode());
+            if (null != task) {
+                log.info("taskService: save ...end - task " + newTask.getCode() + " found!");
+                throw new TaskFoundException(newTask.getCode());
+            }
             Set<User> users = newTask.getUsers();
             User user;
             Set<User> associatedUsers = new HashSet<>();
