@@ -24,11 +24,11 @@ public class RgiApplication extends Application {
 
 		SpringApplication.run(RgiApplication.class, args);
 
-		log.info("Application Task list started...");
+		log.info("Application task list started...");
 	}
 
 	@Bean
-	public CommandLineRunner demo (UserRepository userRepository, TaskRepository taskRepository) {
+	public CommandLineRunner tasks (UserRepository userRepository, TaskRepository taskRepository) {
 		return (args) -> {
 			setUp(userRepository, taskRepository);
 		};

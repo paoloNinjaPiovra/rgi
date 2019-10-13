@@ -1,12 +1,9 @@
 package com.rgi.rgi.controller;
 
-import com.rgi.rgi.entity.Task;
 import com.rgi.rgi.exception.TaskFoundException;
 import com.rgi.rgi.exception.TaskNotFoundException;
 import com.rgi.rgi.exception.UserNotFoundException;
-import com.rgi.rgi.model.TaskDetail;
 import com.rgi.rgi.model.TaskForm;
-import com.rgi.rgi.model.TaskList;
 
 import com.rgi.rgi.service.TaskService;
 
@@ -15,6 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class TaskController {
@@ -26,7 +25,7 @@ public class TaskController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/task")
-    public TaskList list(@RequestHeader("user-session") String userSession)
+    public List<com.rgi.rgi.entity.Task> list(@RequestHeader("user-session") String userSession)
             throws UserNotFoundException {
 
         log.info("listTask begin...");
@@ -36,8 +35,8 @@ public class TaskController {
 
     @ResponseStatus(HttpStatus.FOUND)
     @GetMapping("/task/{code}")
-    public TaskDetail get(@RequestHeader("user-session") String userSession,
-                              @PathVariable("code") String taskCode)
+    public com.rgi.rgi.entity.Task get(@RequestHeader("user-session") String userSession,
+                                       @PathVariable("code") String taskCode)
             throws UserNotFoundException, TaskNotFoundException {
 
         log.info("getTask begin... ");
@@ -57,22 +56,10 @@ public class TaskController {
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @PutMapping("/task/{code}")
-    public Task saveOrUpdate(@RequestHeader("user-session") String userSession,
-                             @RequestBody TaskDetail newTask,
-                             @PathVariable("code") String taskCode)
-            throws UserNotFoundException, TaskNotFoundException {
-
-        log.info("saveOrUpdateTask begin... ");
-
-        return taskService.saveOrUpdate(userSession, newTask, taskCode);
-    }
-
-    @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/task/{code}")
-    public Task patch(@RequestHeader("user-session") String userSession,
-                      @RequestBody Task newTask,
-                      @PathVariable("code") String taskCode)
+    public com.rgi.rgi.entity.Task patch(@RequestHeader("user-session") String userSession,
+                                         @RequestBody TaskForm newTask,
+                                         @PathVariable("code") String taskCode)
             throws UserNotFoundException, TaskNotFoundException {
 
         log.info("patchTask begin...");
@@ -82,8 +69,8 @@ public class TaskController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/task")
-    public Task save(@RequestHeader("user-session") String userSession,
-                     @RequestBody TaskForm newTask)
+    public com.rgi.rgi.entity.Task save(@RequestHeader("user-session") String userSession,
+                                        @RequestBody TaskForm newTask)
             throws UserNotFoundException, TaskNotFoundException, TaskFoundException {
 
         log.info("saveTask begin... ");
@@ -93,8 +80,8 @@ public class TaskController {
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/task/{code}/close")
-    public Task close(@RequestHeader("user-session") String userSession,
-                      @PathVariable("code") String taskCode)
+    public com.rgi.rgi.entity.Task close(@RequestHeader("user-session") String userSession,
+                                         @PathVariable("code") String taskCode)
             throws UserNotFoundException, TaskNotFoundException {
 
         log.info("closeTask begin... ");

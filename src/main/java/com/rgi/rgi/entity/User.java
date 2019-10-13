@@ -27,22 +27,6 @@ public class User implements Serializable {
         this.code = UUID.randomUUID().toString();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id.equals(user.id) &&
-                Objects.equals(code, user.code) &&
-                Objects.equals(name, user.name) /*&&
-                Objects.equals(tasks, user.tasks)*/;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, code, name/*, tasks*/);
-    }
-
     public Long getId() {
         return id;
     }
@@ -66,12 +50,4 @@ public class User implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    /*public Set<Task> getTasks() {
-        return tasks;
-    }
-
-    public void setTasks(Set<Task> tasks) {
-        this.tasks = tasks;
-    }*/
 }

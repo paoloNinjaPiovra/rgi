@@ -5,10 +5,8 @@ import com.rgi.rgi.entity.User;
 import com.rgi.rgi.enums.Status;
 import com.rgi.rgi.exception.TaskNotFoundException;
 import com.rgi.rgi.exception.UserNotFoundException;
-import com.rgi.rgi.model.TaskDetail;
 import com.rgi.rgi.model.TaskForm;
-import com.rgi.rgi.model.TaskInterface;
-import com.rgi.rgi.model.TaskList;
+import com.rgi.rgi.model.UserForm;
 import com.rgi.rgi.repository.TaskRepository;
 import com.rgi.rgi.repository.UserRepository;
 import org.apache.commons.lang3.StringUtils;
@@ -21,7 +19,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -36,12 +36,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(rollbackFor = { UserNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public TaskList list(String userSession) throws UserNotFoundException {
+    public List<Task> list(String userSession) throws UserNotFoundException {
         log.info("taskService: list begin... ");
         if (StringUtils.isNotEmpty(userSession)) {
-            TaskList taskList = new TaskList(taskRepository.findTask(userSession));
+            List<Task> task = taskRepository.findTask(userSession);
             log.info("taskService: list ... end!");
-            return taskList;
+            return task;
         } else {
             log.info("taskService: list ...end - no user found!");
             throw new UserNotFoundException(userSession);
@@ -50,18 +50,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public TaskDetail get(String userSession, String taskCode) throws UserNotFoundException, TaskNotFoundException {
+    public Task get(String userSession, String taskCode) throws UserNotFoundException, TaskNotFoundException {
         log.info("taskService: get begin... ");
         if (StringUtils.isNotEmpty(userSession)) {
             Task task = getTask(userSession, taskCode, "get");
-            TaskDetail taskDetail = new TaskDetail();
-            taskDetail.setCode(task.getCode());
-            taskDetail.setName(task.getName());
-            taskDetail.setDescription(task.getDescription());
-            taskDetail.setStatus(task.getStatus());
-            taskDetail.setUsers(task.getUsers());
             log.info("taskService: get ... end!");
-            return taskDetail;
+            return task;
         } else {
             log.info("taskService: get ...end - no user found!");
             throw new UserNotFoundException(userSession);
@@ -84,55 +78,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
-    public Task saveOrUpdate(String userSession, TaskDetail newTask, String taskCode) throws UserNotFoundException, TaskNotFoundException {
-        log.info("taskService: saveOrUpdate begin... ");
-        if (StringUtils.isNotEmpty(userSession)) {
-            Task task = getTask(userSession, taskCode, "saveOrUpdate");
-            if (null != task) {
-                task.setDescription(newTask.getDescription());
-                task.setName(newTask.getName());
-                task.setStatus(newTask.getStatus());
-                task.setUsers(newTask.getUsers());
-                log.info("taskService: saveOrUpdate ... end!");
-                return taskRepository.save(task);
-            } else {
-                return saveTask(newTask, "saveOrUpdate");
-            }
-        } else {
-            log.info("taskService: saveOrUpdate ...end - no user found!");
-            throw new UserNotFoundException(userSession);
-        }
-    }
-
-    @Override
-    @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
-    public Task patch(String userSession, Task newTask, String taskCode) throws UserNotFoundException, TaskNotFoundException {
+    public Task patch(String userSession, TaskForm newTask, String taskCode) throws UserNotFoundException, TaskNotFoundException {
         log.info("taskService: patch begin... ");
         if (StringUtils.isNotEmpty(userSession)) {
             Task task = getTask(userSession, taskCode, "patch");
             if (null != task) {
-                if (!task.getDescription().equalsIgnoreCase(newTask.getDescription()))
-                    task.setDescription(newTask.getDescription());
-                if (!task.getName().equalsIgnoreCase(newTask.getName()))
-                    task.setName(newTask.getName());
-                if (!task.getStatus().equals(newTask.getStatus()))
-                    task.setStatus(newTask.getStatus());
-                if (!task.getUsers().equals(newTask.getUsers())) {
-                    User user;
-                    Set<User> newUsers = new HashSet<>();
-                    for (User currentUser : newTask.getUsers()) {
-                        user = userRepository.findUserByUserCode(currentUser.getCode());
-                        if (null == user) {
-                            user = userRepository.save(currentUser);
-                        }
-                        newUsers.add(user);
-                    }
-                    task.setUsers(newUsers);
-                } else {
-                    task.setUsers(task.getUsers());
-                }
-                log.info("taskService: patch ... end!");
-                return taskRepository.save(task);
+                return patchTask(task, newTask, "patch");
             } else {
                 log.info("taskService: patch ...end - no task found!");
                 throw new TaskNotFoundException(taskCode);
@@ -176,22 +127,18 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private Task getTask(String userSession, String taskCode, String methodName) throws TaskNotFoundException {
-        if (null == taskRepository.findTaskByCodeAndUserCode(taskCode, userSession)) {
-            log.info("taskService: " + methodName + " ...end - no task found!");
-            throw new TaskNotFoundException(userSession);
-        }
-        Task task = taskRepository.findTaskByCode(taskCode);
+        Task task = taskRepository.findTaskByCodeAndUserCode(taskCode, userSession);
         if (null == task) {
-            log.info("taskService: " + methodName + " ...end - no task found!");
+            log.info("taskService: " + methodName + " ...end - no task (user: " + userSession + " - task: " + taskCode + ") found!");
             throw new TaskNotFoundException(userSession);
         }
         log.info("taskService: " + methodName + " : " + task.getCode() + " : " + task.getName() + " : "  + task.getDescription());
         return task;
     }
 
-    private Task saveTask(TaskInterface newTask, String method) {
+    private Task saveTask(TaskForm newTask, String method) {
         Task task;
-        Set<User> users = newTask.getUsers();
+        Set<User> users = newTask.getUsers().stream().map(userForm -> new User(userForm.getName())).collect(Collectors.toSet());
         task = new Task(newTask.getName(), newTask.getDescription());
         User user;
         Set<User> associatedUsers = new HashSet<>();
@@ -205,5 +152,30 @@ public class TaskServiceImpl implements TaskService {
         task.setUsers(associatedUsers);
         log.info("taskService: " + method + " ... end!");
         return taskRepository.save(task);
+    }
+
+    private Task patchTask(Task task, TaskForm newTask, String method) throws TaskNotFoundException {
+        if (null != task) {
+            User user;
+            Set<User> newUsers = new HashSet<>();
+            if (!task.getDescription().equals(newTask.getDescription()))
+                task.setDescription(newTask.getDescription());
+            if (!task.getName().equals(newTask.getName()))
+                task.setName(newTask.getName());
+            if (!task.getStatus().equals(newTask.getStatus()))
+                task.setStatus(newTask.getStatus());
+            for (UserForm currentUser : newTask.getUsers()) {
+                user = userRepository.findUserByUserCode(currentUser.getCode());
+                if (null == user) {
+                    user = userRepository.save(new User(currentUser.getName()));
+                }
+                newUsers.add(user);
+            }
+            task.setUsers(newUsers);
+            log.info("taskService: " + method + " ... end!");
+            return taskRepository.save(task);
+        }
+        log.info("taskService: close ...end - no task found!");
+        throw new TaskNotFoundException(newTask.getCode());
     }
 }
