@@ -9,6 +9,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,7 +25,7 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TaskPostTests extends AbstractTaskTest {
+public class TaskPostTests {
 
 	@Autowired
 	TaskRepository taskRepository;
@@ -45,10 +46,5 @@ public class TaskPostTests extends AbstractTaskTest {
 		assertThat(
 				httpResponse.getStatusLine().getStatusCode(),
 				equalTo(HttpStatus.SC_NOT_FOUND));
-	}
-
-	@Before
-	public void setUp() {
-		super.setUp(userRepository, taskRepository);
 	}
 }

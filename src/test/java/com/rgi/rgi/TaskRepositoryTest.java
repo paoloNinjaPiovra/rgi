@@ -1,11 +1,10 @@
 package com.rgi.rgi;
 
-import com.rgi.rgi.controller.TaskController;
 import com.rgi.rgi.entity.Task;
 import com.rgi.rgi.entity.User;
-import com.rgi.rgi.exception.UserNotFoundException;
 import com.rgi.rgi.repository.TaskRepository;
 import com.rgi.rgi.repository.UserRepository;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,14 +14,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TaskRepositoryTest extends AbstractTaskTest {
+public class TaskRepositoryTest {
 
     @Autowired
     TaskRepository taskRepository;
@@ -100,8 +97,14 @@ public class TaskRepositoryTest extends AbstractTaskTest {
         Assert.assertTrue(task == null);
     }
 
-    @Before
+    /*@Before
     public void setUp() {
         setUp(userRepository, taskRepository);
     }
+
+    @After
+    public void empty() {
+        taskRepository.deleteAll();
+        userRepository.deleteAll();
+    }*/
 }

@@ -1,9 +1,9 @@
 package com.rgi.rgi;
 
-import com.rgi.rgi.entity.Task;
 import com.rgi.rgi.entity.User;
 import com.rgi.rgi.repository.TaskRepository;
 import com.rgi.rgi.repository.UserRepository;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,13 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UserRepositoryTest extends AbstractTaskTest {
+public class UserRepositoryTest {
 
     @Autowired
     TaskRepository taskRepository;
@@ -79,10 +77,5 @@ public class UserRepositoryTest extends AbstractTaskTest {
     public void findUserByTaskCodeTestKoforUserCode() {
         List<User> userList = userRepository.findUserByTaskCode ("t5be48d5-ae7c-4816-a210-9c984cf760a0","u5be48d5-ae7c-4816-a210-9c984cf760aX");
         Assert.assertTrue(userList.isEmpty());
-    }
-
-    @Before
-    public void setUp() {
-        super.setUp(userRepository, taskRepository);
     }
 }
