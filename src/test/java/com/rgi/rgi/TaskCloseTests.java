@@ -4,8 +4,11 @@ import com.rgi.rgi.entity.Task;
 import com.rgi.rgi.enums.Status;
 import com.rgi.rgi.exception.TaskNotFoundException;
 import com.rgi.rgi.exception.UserNotFoundException;
+import com.rgi.rgi.repository.TaskRepository;
+import com.rgi.rgi.repository.UserRepository;
 import com.rgi.rgi.service.TaskService;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +17,23 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TaskCloseTests {
+public class TaskCloseTests extends Application{
 
 	@Autowired
 	TaskService taskService;
+
+	@Autowired
+	TaskRepository taskRepository;
+
+	@Autowired
+	UserRepository userRepository;
+
+	@Before
+	public void setUp() {
+		taskRepository.deleteAll();
+		userRepository.deleteAll();
+		super.setUp(userRepository, taskRepository);
+	}
 
 	@Test
 	public void closeTest() throws UserNotFoundException, TaskNotFoundException {

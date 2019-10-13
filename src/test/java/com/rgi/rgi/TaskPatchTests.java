@@ -7,8 +7,11 @@ import com.rgi.rgi.exception.TaskNotFoundException;
 import com.rgi.rgi.exception.UserNotFoundException;
 import com.rgi.rgi.model.TaskForm;
 import com.rgi.rgi.model.UserForm;
+import com.rgi.rgi.repository.TaskRepository;
+import com.rgi.rgi.repository.UserRepository;
 import com.rgi.rgi.service.TaskService;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +27,23 @@ import static java.util.stream.Collectors.toList;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TaskPatchTests {
+public class TaskPatchTests extends Application {
 
     @Autowired
     TaskService taskService;
+
+    @Autowired
+    TaskRepository taskRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Before
+    public void setUp() {
+        taskRepository.deleteAll();
+        userRepository.deleteAll();
+        super.setUp(userRepository, taskRepository);
+    }
 
     @Test
     @Transactional
@@ -50,8 +66,10 @@ public class TaskPatchTests {
         UserForm userX = new UserForm("u5be48d5-ae7c-4816-a210-9c984cf760aX", "userX");
         Set<UserForm> usersForm = new HashSet<>();
         usersForm.add(userX);
+        UserForm userFormToAdd;
         for (User currentUser : task.getUsers()) {
-            usersForm.add(new UserForm(currentUser.getCode(), currentUser.getName()));
+            userFormToAdd = new UserForm(currentUser.getCode(), currentUser.getName());
+            usersForm.add(userFormToAdd);
         }
         taskForm.setUsers(usersForm);
         task = taskService.patch("u5be48d5-ae7c-4816-a210-9c984cf760a0", taskForm, taskCodeToPatch);
@@ -60,13 +78,6 @@ public class TaskPatchTests {
         Assert.assertTrue(task.getDescription().equals("task X description"));
         Assert.assertTrue(task.getName().equals("task X"));
         Assert.assertTrue(task.getUsers().size() == 2);
-        List<User> newUsers = task.getUsers().stream().collect(toList());
-        Assert.assertTrue(newUsers.get(0).getCode().equals("u5be48d5-ae7c-4816-a210-9c984cf760a0"));
-        Assert.assertTrue(newUsers.get(0).getName().equals("user"));
-        Assert.assertTrue(newUsers.get(1).getCode().equals("u5be48d5-ae7c-4816-a210-9c984cf760aX"));
-        Assert.assertTrue(newUsers.get(1).getName().equals("userX"));
-
-
     }
 
     @Test(expected = TaskNotFoundException.class)

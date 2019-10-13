@@ -27,6 +27,25 @@ public class User implements Serializable {
         this.code = UUID.randomUUID().toString();
     }
 
+    public User(String name, String code) {
+        this.name = name;
+        this.code = code;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return code.equals(user.code) &&
+                name.equals(user.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(code, name);
+    }
+
     public Long getId() {
         return id;
     }

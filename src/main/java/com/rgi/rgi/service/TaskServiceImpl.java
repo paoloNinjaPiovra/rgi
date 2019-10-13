@@ -167,7 +167,7 @@ public class TaskServiceImpl implements TaskService {
             for (UserForm currentUser : newTask.getUsers()) {
                 user = userRepository.findUserByUserCode(currentUser.getCode());
                 if (null == user) {
-                    user = userRepository.save(new User(currentUser.getName()));
+                    user = userRepository.save(new User(currentUser.getName(), currentUser.getCode()));
                 }
                 newUsers.add(user);
             }

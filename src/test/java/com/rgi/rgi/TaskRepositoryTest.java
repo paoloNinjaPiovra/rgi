@@ -4,7 +4,6 @@ import com.rgi.rgi.entity.Task;
 import com.rgi.rgi.entity.User;
 import com.rgi.rgi.repository.TaskRepository;
 import com.rgi.rgi.repository.UserRepository;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,13 +18,20 @@ import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class TaskRepositoryTest {
+public class TaskRepositoryTest extends Application {
 
     @Autowired
     TaskRepository taskRepository;
 
     @Autowired
     UserRepository userRepository;
+
+    @Before
+    public void setUp() {
+        taskRepository.deleteAll();
+        userRepository.deleteAll();
+        super.setUp(userRepository, taskRepository);
+    }
 
     @Test
     @Transactional
