@@ -138,14 +138,13 @@ public class TaskServiceImpl implements TaskService {
 
     private Task saveTask(TaskForm newTask, String method) {
         Task task;
-        Set<User> users = newTask.getUsers().stream().map(userForm -> new User(userForm.getName())).collect(Collectors.toSet());
-        task = new Task(newTask.getName(), newTask.getDescription());
+        task = new Task(newTask.getName(), newTask.getDescription(), newTask.getCode());
         User user;
         Set<User> associatedUsers = new HashSet<>();
-        for(User currentUser: users) {
+        for(UserForm currentUser: newTask.getUsers()) {
             user = userRepository.findUserByName(currentUser.getName());
             if (null == user) {
-                user = userRepository.save(new User(currentUser.getName()));
+                user = userRepository.save(new User(currentUser.getName(), currentUser.getCode()));
             }
             associatedUsers.add(user);
         }

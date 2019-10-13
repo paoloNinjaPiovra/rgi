@@ -45,7 +45,12 @@ public class Task {
         this.code = UUID.randomUUID().toString();
     }
 
-
+    public Task(String name, String description, String code) {
+        this.name = name;
+        this.description = description;
+        this.status = Status.NEW;
+        this.code = code;
+    }
 
     public Long getId() {
         return id;

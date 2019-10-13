@@ -4,6 +4,7 @@ import com.rgi.rgi.entity.Task;
 import com.rgi.rgi.entity.User;
 import com.rgi.rgi.repository.TaskRepository;
 import com.rgi.rgi.repository.UserRepository;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,14 +34,19 @@ public class TaskRepositoryTest extends Application {
         super.setUp(userRepository, taskRepository);
     }
 
+    @After
+    public void destroy() {
+        taskRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
     @Test
-    @Transactional
     public void findTaskListUserTest() {
         List<Task> taskList = taskRepository.findTask("u5be48d5-ae7c-4816-a210-9c984cf760a0");
         Assert.assertTrue(taskList.size() == 6);
     }
 
-    @Test
+    /*@Test
     @Transactional
     public void findTaskListUser1Test() {
         List<Task> taskList = taskRepository.findTask("u5be48d5-ae7c-4816-a210-9c984cf760a1");
@@ -101,16 +107,5 @@ public class TaskRepositoryTest extends Application {
     public void findTaskByCodeTestKoForTaskCode() {
         Task task = taskRepository.findTaskByCode("t5be48d5-ae7c-4816-a210-9c984cf760aX");
         Assert.assertTrue(task == null);
-    }
-
-    /*@Before
-    public void setUp() {
-        setUp(userRepository, taskRepository);
-    }
-
-    @After
-    public void empty() {
-        taskRepository.deleteAll();
-        userRepository.deleteAll();
     }*/
 }
