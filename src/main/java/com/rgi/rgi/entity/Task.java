@@ -28,7 +28,7 @@ public class Task {
     @Column(name="STATUS", nullable = false)
     private Status status;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "TASK_USER",
             joinColumns = { @JoinColumn(name = "TASK_ID", nullable = false, updatable = false) },
             inverseJoinColumns = { @JoinColumn(name = "USER_ID", nullable = false, updatable = false) }

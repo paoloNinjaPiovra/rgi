@@ -1,53 +1,49 @@
 package com.rgi.rgi;
 
 import com.rgi.rgi.entity.Task;
-import com.rgi.rgi.entity.User;
-import com.rgi.rgi.repository.TaskRepository;
-import com.rgi.rgi.repository.UserRepository;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.junit.After;
+import com.rgi.rgi.enums.Status;
+import com.rgi.rgi.exception.TaskNotFoundException;
+import com.rgi.rgi.exception.UserNotFoundException;
+import com.rgi.rgi.service.TaskService;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TaskCloseTests {
 
 	@Autowired
-	TaskRepository taskRepository;
-
-	@Autowired
-	UserRepository userRepository;
+	TaskService taskService;
 
 	@Test
-	public void closeTest() throws Exception {
+	public void closeTest() throws UserNotFoundException, TaskNotFoundException {
+		String taskCodeToClose = "t5be48d5-ae7c-4816-a210-9c984cf760a0";
+		Task task = taskService.get("u5be48d5-ae7c-4816-a210-9c984cf760a0", taskCodeToClose);
+		Assert.assertTrue(task.getStatus().equals(Status.NEW));
+		task = taskService.close("u5be48d5-ae7c-4816-a210-9c984cf760a0", taskCodeToClose);
+		Assert.assertTrue(task.getStatus().equals(Status.CLOSED));
+	}
 
-		// Given
-		HttpUriRequest request = new HttpGet( "https://localhost/task/t5be48d5-ae7c-4816-a210-9c984cf760a5/close");
-		request.addHeader("user-session", "u5be48d5-ae7c-4816-a210-9c984cf760a0");
-		// When
-		HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
+	@Test(expected = TaskNotFoundException.class)
+	public void closeTestKoTaskCode() throws UserNotFoundException, TaskNotFoundException {
+		String taskCodeToClose = "t5be48d5-ae7c-4816-a210-9c984cf760aX";
+		taskService.delete("u5be48d5-ae7c-4816-a210-9c984cf760a0", taskCodeToClose);
 
-		// Then
-		assertThat(
-				httpResponse.getStatusLine().getStatusCode(),
-				equalTo(HttpStatus.SC_NOT_FOUND));
+	}
+
+	@Test(expected = TaskNotFoundException.class)
+	public void closeTestKoUserCode() throws UserNotFoundException, TaskNotFoundException {
+		String taskCodeToClose = "t5be48d5-ae7c-4816-a210-9c984cf760a0";
+		taskService.close("u5be48d5-ae7c-4816-a210-9c984cf760aX", taskCodeToClose);
+	}
+
+	@Test(expected = UserNotFoundException.class)
+	public void closeTestNoUSerCode() throws UserNotFoundException, TaskNotFoundException {
+		String taskCodeToClose = "t5be48d5-ae7c-4816-a210-9c984cf760a0";
+		taskService.close("", taskCodeToClose);
 	}
 }

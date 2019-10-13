@@ -1,53 +1,54 @@
 package com.rgi.rgi;
 
 import com.rgi.rgi.entity.Task;
-import com.rgi.rgi.entity.User;
-import com.rgi.rgi.repository.TaskRepository;
-import com.rgi.rgi.repository.UserRepository;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.junit.After;
+import com.rgi.rgi.exception.TaskNotFoundException;
+import com.rgi.rgi.exception.UserNotFoundException;
+import com.rgi.rgi.service.TaskService;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class TaskDeleteTests {
 
 	@Autowired
-	TaskRepository taskRepository;
-
-	@Autowired
-	UserRepository userRepository;
+	TaskService taskService;
 
 	@Test
-	public void deleteTest() throws Exception {
+	public void deleteTest() throws UserNotFoundException, TaskNotFoundException {
+		String taskCodeToDelete = "t5be48d5-ae7c-4816-a210-9c984cf760a0";
+		List<Task> list = taskService.list("u5be48d5-ae7c-4816-a210-9c984cf760a0");
+		Assert.assertTrue(list.size() == 6);
+		taskService.delete("u5be48d5-ae7c-4816-a210-9c984cf760a0", taskCodeToDelete);
+		list = taskService.list("u5be48d5-ae7c-4816-a210-9c984cf760a0");
+		Assert.assertTrue(list.size() == 5);
+		for (Task currentTask : list) {
+			Assert.assertTrue(!currentTask.getCode().equals(taskCodeToDelete));
+		}
+	}
 
-		// Given
-		HttpUriRequest request = new HttpGet( "https://localhost/task/t5be48d5-ae7c-4816-a210-9c984cf760a5");
-		request.addHeader("user-session", "u5be48d5-ae7c-4816-a210-9c984cf760a0");
-		// When
-		HttpResponse httpResponse = HttpClientBuilder.create().build().execute(request);
+	@Test(expected = TaskNotFoundException.class)
+	public void deleteTestKoTaskCode() throws UserNotFoundException, TaskNotFoundException {
+		String taskCodeToDelete = "t5be48d5-ae7c-4816-a210-9c984cf760aX";
+		taskService.delete("u5be48d5-ae7c-4816-a210-9c984cf760a0", taskCodeToDelete);
 
-		// Then
-		assertThat(
-				httpResponse.getStatusLine().getStatusCode(),
-				equalTo(HttpStatus.SC_NOT_FOUND));
+	}
+
+	@Test(expected = TaskNotFoundException.class)
+	public void deleteTestKoUserCode() throws UserNotFoundException, TaskNotFoundException {
+		String taskCodeToDelete = "t5be48d5-ae7c-4816-a210-9c984cf760a0";
+		taskService.delete("u5be48d5-ae7c-4816-a210-9c984cf760aX", taskCodeToDelete);
+	}
+
+	@Test(expected = UserNotFoundException.class)
+	public void deleteTestNoUSerCode() throws UserNotFoundException, TaskNotFoundException {
+		String taskCodeToDelete = "t5be48d5-ae7c-4816-a210-9c984cf760a0";
+		taskService.delete("", taskCodeToDelete);
 	}
 }
