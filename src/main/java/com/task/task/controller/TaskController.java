@@ -24,6 +24,10 @@ public class TaskController {
     @Autowired
     TaskService taskService;
 
+    /**
+        http://localhost:8080/task/
+        user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
+     */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/task")
     public List<Task> list(@RequestHeader("user-session") String userSession)
@@ -34,6 +38,10 @@ public class TaskController {
         return taskService.list(userSession);
     }
 
+    /**
+        http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a5
+        user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
+     */
     @ResponseStatus(HttpStatus.FOUND)
     @GetMapping("/task/{code}")
     public Task get(@RequestHeader("user-session") String userSession,
@@ -45,6 +53,10 @@ public class TaskController {
         return taskService.get(userSession, taskCode);
     }
 
+    /**
+        http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a5
+        user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
+     */
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/task/{code}")
     public void delete(@RequestHeader("user-session") String userSession,
@@ -56,6 +68,23 @@ public class TaskController {
         taskService.delete(userSession, taskCode);
     }
 
+    /**
+        http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a5
+        user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
+
+        {
+            "code": "t5be48d5-ae7c-4816-a210-9c984cf760a0",
+            "name": "task 0 updated",
+            "description": "task 0 updated description",
+            "users": [
+                {
+                    "code": "u5be48d5-ae7c-4816-a210-9c984cf760a0",
+                    "name": "user"
+                }
+            ],
+            "status": "RUNNING"
+        }
+     */
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/task/{code}")
     public Task patch(@RequestHeader("user-session") String userSession,
@@ -68,6 +97,23 @@ public class TaskController {
         return taskService.patch(userSession, newTask, taskCode);
     }
 
+    /**
+        http://localhost:8080/task/
+        user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
+
+        {
+            "name": "task X",
+            "description": "task X description",
+            "users": [
+                {
+                    "name": "user"
+                },
+                {
+                    "name": "userX"
+                }
+            ]
+        }
+     */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/task")
     public Task save(@RequestHeader("user-session") String userSession,
@@ -79,6 +125,10 @@ public class TaskController {
         return taskService.save(userSession, newTask);
     }
 
+    /**
+        http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a0/close
+        user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
+     */
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/task/{code}/close")
     public Task close(@RequestHeader("user-session") String userSession,
