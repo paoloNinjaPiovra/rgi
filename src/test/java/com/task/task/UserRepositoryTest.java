@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -38,7 +39,6 @@ public class UserRepositoryTest extends Application {
     }
 
     @Test
-    @Transactional
     public void findUserByNameTest() {
         User user = userRepository.findUserByName("user");
         Assert.assertTrue(user != null);
@@ -46,29 +46,25 @@ public class UserRepositoryTest extends Application {
         Assert.assertTrue(user.getCode().equals("u5be48d5-ae7c-4816-a210-9c984cf760a0"));
     }
 
-    /*@Test
-    @Transactional
+    @Test
     public void findUserByNameTestKo() {
         User user = userRepository.findUserByName("fakeUser");
         Assert.assertTrue(user == null);
     }
 
     @Test
-    @Transactional
     public void findUserByUserCodeTest() {
         User user = userRepository.findUserByUserCode("u5be48d5-ae7c-4816-a210-9c984cf760a0");
         Assert.assertTrue(user != null);
     }
 
     @Test
-    @Transactional
     public void findUserByUserCodeTestKo() {
         User user = userRepository.findUserByUserCode("fakeUser");
         Assert.assertTrue(user == null);
     }
 
     @Test
-    @Transactional
     public void findUserByTaskCodeTest() {
         List<User> userList = userRepository.findUserByTaskCode ("t5be48d5-ae7c-4816-a210-9c984cf760a0","u5be48d5-ae7c-4816-a210-9c984cf760a0");
         Assert.assertTrue(userList.size() == 1);
@@ -77,7 +73,6 @@ public class UserRepositoryTest extends Application {
     }
 
     @Test
-    @Transactional
     public void findUserByTaskCodeTestKoForTaskCode() {
         List<User> userList = userRepository.findUserByTaskCode ("t5be48d5-ae7c-4816-a210-9c984cf760aX","u5be48d5-ae7c-4816-a210-9c984cf760a0");
         Assert.assertTrue(userList.isEmpty());
@@ -85,9 +80,8 @@ public class UserRepositoryTest extends Application {
     }
 
     @Test
-    @Transactional
     public void findUserByTaskCodeTestKoforUserCode() {
         List<User> userList = userRepository.findUserByTaskCode ("t5be48d5-ae7c-4816-a210-9c984cf760a0","u5be48d5-ae7c-4816-a210-9c984cf760aX");
         Assert.assertTrue(userList.isEmpty());
-    }*/
+    }
 }
