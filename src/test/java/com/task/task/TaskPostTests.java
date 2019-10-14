@@ -86,4 +86,18 @@ public class TaskPostTests extends Application {
         taskService.patch("", new TaskForm(), taskCodeToPatch);
     }
 
+    @Test(expected = TaskFoundException.class)
+    public void postTestKoTaskFound() throws UserNotFoundException, TaskNotFoundException, TaskFoundException {
+        TaskForm taskForm = new TaskForm();
+        taskForm.setDescription("task 0 description");
+        taskForm.setName("task 0");
+        taskForm.setCode("t5be48d5-ae7c-4816-a210-9c984cf760a0");
+        UserForm userX = new UserForm("u5be48d5-ae7c-4816-a210-9c984cf760aX", "userX");
+        UserForm user4 = new UserForm("u5be48d5-ae7c-4816-a210-9c984cf760a0", "user");
+        Set<UserForm> usersForm = new HashSet<>();
+        usersForm.add(userX);
+        usersForm.add(user4);
+        taskForm.setUsers(usersForm);
+        taskService.save("u5be48d5-ae7c-4816-a210-9c984cf760a0", taskForm);
+    }
 }

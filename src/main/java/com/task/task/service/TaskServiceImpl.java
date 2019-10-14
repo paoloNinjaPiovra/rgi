@@ -3,6 +3,7 @@ package com.task.task.service;
 import com.task.task.entity.Task;
 import com.task.task.entity.User;
 import com.task.task.enums.Status;
+import com.task.task.exception.TaskFoundException;
 import com.task.task.exception.TaskNotFoundException;
 import com.task.task.exception.UserNotFoundException;
 import com.task.task.model.TaskForm;
@@ -95,9 +96,11 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
-    public Task save(String userSession, TaskForm newTask) throws UserNotFoundException {
+    public Task save(String userSession, TaskForm newTask) throws UserNotFoundException, TaskFoundException {
         log.info("taskService: save begin... ");
         if (StringUtils.isNotEmpty(userSession)) {
+            if (null != taskRepository.findTaskByCode(newTask.getCode()))
+                throw new TaskFoundException(newTask.getCode());
             return saveTask(newTask, "save");
         } else {
             log.info("taskService: save ...end - no user found!");
