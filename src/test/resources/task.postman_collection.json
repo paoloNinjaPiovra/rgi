@@ -1,0 +1,221 @@
+{
+	"info": {
+		"_postman_id": "3000e437-c513-4898-b3fa-6d9b86e7bcaf",
+		"name": "task",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "LIST",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "user-session",
+						"type": "text",
+						"value": "u5be48d5-ae7c-4816-a210-9c984cf760a0"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/task/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"task",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "user-session",
+						"type": "text",
+						"value": "u5be48d5-ae7c-4816-a210-9c984cf760a0"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"task",
+						"t5be48d5-ae7c-4816-a210-9c984cf760a5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "user-session",
+						"value": "u5be48d5-ae7c-4816-a210-9c984cf760a0",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"task",
+						"t5be48d5-ae7c-4816-a210-9c984cf760a5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SAVE",
+			"protocolProfileBehavior": {
+				"followOriginalHttpMethod": true,
+				"followAuthorizationHeader": true,
+				"removeRefererHeaderOnRedirect": true,
+				"tlsPreferServerCiphers": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "user-session",
+						"type": "text",
+						"value": "u5be48d5-ae7c-4816-a210-9c984cf760a0"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"task X\",\n    \"description\": \"task X description\",\n    \"users\": [\n        {\n            \"name\": \"user\"\n        },\n        {\n            \"name\": \"userX\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/task/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"task",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PATCH",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "user-session",
+						"type": "text",
+						"value": "u5be48d5-ae7c-4816-a210-9c984cf760a0"
+					},
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"code\": \"t5be48d5-ae7c-4816-a210-9c984cf760a5\",\n    \"name\": \"task 0 updated\",\n    \"description\": \"task 0 updated description\",\n    \"users\": [\n        {\n        \t\"code\": \"u5be48d5-ae7c-4816-a210-9c984cf760a0\",\n            \"name\": \"user\"\n        }\n    ],\n    \"status\": \"RUNNING\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"task",
+						"t5be48d5-ae7c-4816-a210-9c984cf760a5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CLOSE",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "user-session",
+						"type": "text",
+						"value": "u5be48d5-ae7c-4816-a210-9c984cf760a0"
+					},
+					{
+						"key": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"task 5\",\n    \"description\": \"task 5 description\",\n    \"users\": [\n        {\n            \"id\": 11,\n            \"code\": \"u5be48d5-ae7c-4816-a210-9c984cf760a5\",\n            \"name\": \"user5\"\n        },\n        {\n            \"id\": 9,\n            \"code\": \"u5be48d5-ae7c-4816-a210-9c984cf760a4\",\n            \"name\": \"user4\"\n        },\n        {\n            \"id\": 7,\n            \"code\": \"u5be48d5-ae7c-4816-a210-9c984cf760a3\",\n            \"name\": \"user3\"\n        },\n        {\n            \"id\": 1,\n            \"code\": \"u5be48d5-ae7c-4816-a210-9c984cf760a0\",\n            \"name\": \"user\"\n        },\n        {\n            \"id\": 5,\n            \"code\": \"u5be48d5-ae7c-4816-a210-9c984cf760a2\",\n            \"name\": \"user2\"\n        },\n        {\n            \"id\": 3,\n            \"code\": \"u5be48d5-ae7c-4816-a210-9c984cf760a1\",\n            \"name\": \"user1\"\n        }\n    ],\n    \"code\": \"t5be48d5-ae7c-4816-a210-9c984cf760a5\",\n    \"status\": \"NEW\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a0/close",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"task",
+						"t5be48d5-ae7c-4816-a210-9c984cf760a0",
+						"close"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
