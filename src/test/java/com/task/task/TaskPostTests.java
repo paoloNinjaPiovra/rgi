@@ -60,7 +60,6 @@ public class TaskPostTests extends Application {
         usersForm.add(user4);
         taskForm.setUsers(usersForm);
         Task task = taskService.save("u5be48d5-ae7c-4816-a210-9c984cf760a0", taskForm);
-        Assert.assertTrue(task.getCode().equals("t5be48d5-ae7c-4816-a210-9c984cf760aX"));
         Assert.assertTrue(task.getStatus().equals(Status.NEW));
         Assert.assertTrue(task.getDescription().equals("task X description"));
         Assert.assertTrue(task.getName().equals("task X"));
