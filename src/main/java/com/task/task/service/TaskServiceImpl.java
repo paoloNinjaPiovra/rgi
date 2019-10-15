@@ -6,6 +6,7 @@ import com.task.task.enums.Status;
 import com.task.task.exception.TaskFoundException;
 import com.task.task.exception.TaskNotFoundException;
 import com.task.task.exception.UserNotFoundException;
+import com.task.task.model.Task4List;
 import com.task.task.model.TaskForm;
 import com.task.task.model.UserForm;
 import com.task.task.repository.TaskRepository;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -35,13 +37,13 @@ public class TaskServiceImpl implements TaskService {
     UserRepository userRepository;
 
     @Override
-    @Transactional(rollbackFor = { UserNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, readOnly = true, isolation = Isolation.READ_COMMITTED)
-    public List<Task> list(String userSession) throws UserNotFoundException {
+    @Transactional(rollbackFor = {UserNotFoundException.class}, propagation = Propagation.REQUIRES_NEW, readOnly = true, isolation = Isolation.READ_COMMITTED)
+    public List<Task4List> list(String userSession) throws UserNotFoundException {
         log.info("taskService: list begin... ");
         if (StringUtils.isNotEmpty(userSession)) {
             List<Task> task = taskRepository.findTask(userSession);
             log.info("taskService: list ... end!");
-            return task;
+            return task.stream().map(t -> new Task4List(t.getName(), t.getStatus(), t.getCode())).collect(Collectors.toList());
         } else {
             log.info("taskService: list ...end - no user found!");
             throw new UserNotFoundException(userSession);
@@ -49,7 +51,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, readOnly = true, isolation = Isolation.READ_COMMITTED)
+    @Transactional(rollbackFor = {UserNotFoundException.class, TaskNotFoundException.class}, propagation = Propagation.REQUIRES_NEW, readOnly = true, isolation = Isolation.READ_COMMITTED)
     public Task get(String userSession, String taskCode) throws UserNotFoundException, TaskNotFoundException {
         log.info("taskService: get begin... ");
         if (StringUtils.isNotEmpty(userSession)) {
@@ -63,7 +65,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    @Transactional(rollbackFor = {UserNotFoundException.class, TaskNotFoundException.class}, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public void delete(String userSession, String taskCode) throws UserNotFoundException, TaskNotFoundException {
         log.info("taskService: delete begin... ");
         if (StringUtils.isNotEmpty(userSession)) {
@@ -77,7 +79,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    @Transactional(rollbackFor = {UserNotFoundException.class, TaskNotFoundException.class}, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public Task patch(String userSession, TaskForm newTask, String taskCode) throws UserNotFoundException, TaskNotFoundException {
         log.info("taskService: patch begin... ");
         if (StringUtils.isNotEmpty(userSession)) {
@@ -95,7 +97,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    @Transactional(rollbackFor = {UserNotFoundException.class, TaskNotFoundException.class}, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public Task save(String userSession, TaskForm newTask) throws UserNotFoundException, TaskFoundException {
         log.info("taskService: save begin... ");
         if (StringUtils.isNotEmpty(userSession)) {
@@ -109,7 +111,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    @Transactional(rollbackFor = { UserNotFoundException.class, TaskNotFoundException.class }, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    @Transactional(rollbackFor = {UserNotFoundException.class, TaskNotFoundException.class}, propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public Task close(String userSession, String taskCode) throws UserNotFoundException, TaskNotFoundException {
         log.info("taskService: close begin... ");
         if (StringUtils.isNotEmpty(userSession)) {
@@ -134,7 +136,7 @@ public class TaskServiceImpl implements TaskService {
             log.info("taskService: " + methodName + " ...end - no task (user: " + userSession + " - task: " + taskCode + ") found!");
             throw new TaskNotFoundException(userSession);
         }
-        log.info("taskService: " + methodName + " : " + task.getCode() + " : " + task.getName() + " : "  + task.getDescription());
+        log.info("taskService: " + methodName + " : " + task.getCode() + " : " + task.getName() + " : " + task.getDescription());
         return task;
     }
 
@@ -143,7 +145,7 @@ public class TaskServiceImpl implements TaskService {
         task = new Task(newTask.getName(), newTask.getDescription(), newTask.getCode());
         User user;
         Set<User> associatedUsers = new HashSet<>();
-        for(UserForm currentUser: newTask.getUsers()) {
+        for (UserForm currentUser : newTask.getUsers()) {
             user = userRepository.findUserByName(currentUser.getName());
             if (null == user) {
                 user = userRepository.save(new User(currentUser.getName(), currentUser.getCode()));

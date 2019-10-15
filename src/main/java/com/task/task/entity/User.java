@@ -2,21 +2,22 @@ package com.task.task.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
+import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @Table(name = "USER")
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO, generator = "USER_SEQ")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "USER_SEQ")
     @SequenceGenerator(sequenceName = "user_seq", allocationSize = 1, name = "USER_SEQ")
     private Long id;
 
-    @Column(name="CODE", nullable = false, unique = true)
+    @Column(name = "CODE", nullable = false, unique = true)
     private String code;
 
-    @Column(name="NAME", nullable = false)
+    @Column(name = "NAME", nullable = false)
     private String name;
 
     public User() {
@@ -33,25 +34,12 @@ public class User implements Serializable {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return code.equals(user.code) &&
-                name.equals(user.name);
-    }
-
-    @Override
     public int hashCode() {
         return Objects.hash(code, name);
     }
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        id = id;
     }
 
     public String getCode() {
@@ -64,9 +52,5 @@ public class User implements Serializable {
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 }

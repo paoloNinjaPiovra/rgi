@@ -4,10 +4,9 @@ import com.task.task.entity.Task;
 import com.task.task.exception.TaskFoundException;
 import com.task.task.exception.TaskNotFoundException;
 import com.task.task.exception.UserNotFoundException;
+import com.task.task.model.Task4List;
 import com.task.task.model.TaskForm;
-
 import com.task.task.service.TaskService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +24,12 @@ public class TaskController {
     TaskService taskService;
 
     /**
-        http://localhost:8080/task/
-        user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
+     * http://localhost:8080/task/
+     * user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
      */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/task")
-    public List<Task> list(@RequestHeader("user-session") String userSession)
+    public List<Task4List> list(@RequestHeader("user-session") String userSession)
             throws UserNotFoundException {
 
         log.info("listTask begin...");
@@ -39,8 +38,8 @@ public class TaskController {
     }
 
     /**
-        http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a5
-        user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
+     * http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a5
+     * user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
      */
     @ResponseStatus(HttpStatus.FOUND)
     @GetMapping("/task/{code}")
@@ -54,13 +53,13 @@ public class TaskController {
     }
 
     /**
-        http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a5
-        user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
+     * http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a5
+     * user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
      */
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping("/task/{code}")
     public void delete(@RequestHeader("user-session") String userSession,
-                           @PathVariable("code") String taskCode)
+                       @PathVariable("code") String taskCode)
             throws UserNotFoundException, TaskNotFoundException {
 
         log.info("deleteTask begin... ");
@@ -69,21 +68,21 @@ public class TaskController {
     }
 
     /**
-        http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a5
-        user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
-
-        {
-            "code": "t5be48d5-ae7c-4816-a210-9c984cf760a0",
-            "name": "task 0 updated",
-            "description": "task 0 updated description",
-            "users": [
-                {
-                    "code": "u5be48d5-ae7c-4816-a210-9c984cf760a0",
-                    "name": "user"
-                }
-            ],
-            "status": "RUNNING"
-        }
+     * http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a5
+     * user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
+     * <p>
+     * {
+     * "code": "t5be48d5-ae7c-4816-a210-9c984cf760a0",
+     * "name": "task 0 updated",
+     * "description": "task 0 updated description",
+     * "users": [
+     * {
+     * "code": "u5be48d5-ae7c-4816-a210-9c984cf760a0",
+     * "name": "user"
+     * }
+     * ],
+     * "status": "RUNNING"
+     * }
      */
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/task/{code}")
@@ -98,21 +97,21 @@ public class TaskController {
     }
 
     /**
-        http://localhost:8080/task/
-        user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
-
-        {
-            "name": "task X",
-            "description": "task X description",
-            "users": [
-                {
-                    "name": "user"
-                },
-                {
-                    "name": "userX"
-                }
-            ]
-        }
+     * http://localhost:8080/task/
+     * user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
+     * <p>
+     * {
+     * "name": "task X",
+     * "description": "task X description",
+     * "users": [
+     * {
+     * "name": "user"
+     * },
+     * {
+     * "name": "userX"
+     * }
+     * ]
+     * }
      */
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/task")
@@ -126,8 +125,8 @@ public class TaskController {
     }
 
     /**
-        http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a0/close
-        user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
+     * http://localhost:8080/task/t5be48d5-ae7c-4816-a210-9c984cf760a0/close
+     * user-session: u5be48d5-ae7c-4816-a210-9c984cf760a0
      */
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping("/task/{code}/close")

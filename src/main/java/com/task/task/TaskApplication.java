@@ -18,19 +18,19 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @PropertySource("classpath:application.properties")
 public class TaskApplication extends Application {
 
-	private static final Logger log = LoggerFactory.getLogger(TaskApplication.class);
+    private static final Logger log = LoggerFactory.getLogger(TaskApplication.class);
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		SpringApplication.run(TaskApplication.class, args);
+        SpringApplication.run(TaskApplication.class, args);
 
-		log.info("Application task list started...");
-	}
+        log.info("Application task list started...");
+    }
 
-	@Bean
-	public CommandLineRunner tasks (UserRepository userRepository, TaskRepository taskRepository) {
-		return (args) -> {
-			setUp(userRepository, taskRepository);
-		};
-	}
+    @Bean
+    public CommandLineRunner tasks(UserRepository userRepository, TaskRepository taskRepository) {
+        return (args) -> {
+            setUp(userRepository, taskRepository);
+        };
+    }
 }

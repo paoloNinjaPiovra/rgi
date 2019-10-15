@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -66,7 +65,7 @@ public class UserRepositoryTest extends Application {
 
     @Test
     public void findUserByTaskCodeTest() {
-        List<User> userList = userRepository.findUserByTaskCode ("t5be48d5-ae7c-4816-a210-9c984cf760a0","u5be48d5-ae7c-4816-a210-9c984cf760a0");
+        List<User> userList = userRepository.findUserByTaskCode("t5be48d5-ae7c-4816-a210-9c984cf760a0", "u5be48d5-ae7c-4816-a210-9c984cf760a0");
         Assert.assertTrue(userList.size() == 1);
         Assert.assertTrue(userList.get(0).getCode().equals("u5be48d5-ae7c-4816-a210-9c984cf760a0"));
         Assert.assertTrue(userList.get(0).getName().equals("user"));
@@ -74,14 +73,14 @@ public class UserRepositoryTest extends Application {
 
     @Test
     public void findUserByTaskCodeTestKoForTaskCode() {
-        List<User> userList = userRepository.findUserByTaskCode ("t5be48d5-ae7c-4816-a210-9c984cf760aX","u5be48d5-ae7c-4816-a210-9c984cf760a0");
+        List<User> userList = userRepository.findUserByTaskCode("t5be48d5-ae7c-4816-a210-9c984cf760aX", "u5be48d5-ae7c-4816-a210-9c984cf760a0");
         Assert.assertTrue(userList.isEmpty());
 
     }
 
     @Test
     public void findUserByTaskCodeTestKoforUserCode() {
-        List<User> userList = userRepository.findUserByTaskCode ("t5be48d5-ae7c-4816-a210-9c984cf760a0","u5be48d5-ae7c-4816-a210-9c984cf760aX");
+        List<User> userList = userRepository.findUserByTaskCode("t5be48d5-ae7c-4816-a210-9c984cf760a0", "u5be48d5-ae7c-4816-a210-9c984cf760aX");
         Assert.assertTrue(userList.isEmpty());
     }
 }

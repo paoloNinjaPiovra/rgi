@@ -5,6 +5,7 @@ import com.task.task.enums.Status;
 import com.task.task.exception.TaskFoundException;
 import com.task.task.exception.TaskNotFoundException;
 import com.task.task.exception.UserNotFoundException;
+import com.task.task.model.Task4List;
 import com.task.task.model.TaskForm;
 import com.task.task.model.UserForm;
 import com.task.task.repository.TaskRepository;
@@ -46,7 +47,7 @@ public class TaskPostTests extends Application {
     @Test
     @Transactional
     public void postTest() throws UserNotFoundException, TaskNotFoundException, TaskFoundException {
-        List<Task> taskList = taskService.list("u5be48d5-ae7c-4816-a210-9c984cf760a0");
+        List<Task4List> taskList = taskService.list("u5be48d5-ae7c-4816-a210-9c984cf760a0");
         int oldSize = taskList.size();
         TaskForm taskForm = new TaskForm();
         taskForm.setDescription("task X description");

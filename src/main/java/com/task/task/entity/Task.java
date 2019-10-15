@@ -12,26 +12,26 @@ import java.util.UUID;
 public class Task {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO, generator = "TASK_SEQ")
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "TASK_SEQ")
     @SequenceGenerator(sequenceName = "user_seq", allocationSize = 1, name = "TASK_SEQ")
     private Long id;
 
-    @Column(name="CODE", nullable = false, unique = true)
+    @Column(name = "CODE", nullable = false, unique = true)
     private String code;
 
-    @Column(name="NAME")
+    @Column(name = "NAME")
     private String name;
 
-    @Column(name="DESCRIPTION")
+    @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(name="STATUS", nullable = false)
+    @Column(name = "STATUS", nullable = false)
     private Status status;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "TASK_USER",
-            joinColumns = { @JoinColumn(name = "TASK_ID", nullable = false, updatable = false) },
-            inverseJoinColumns = { @JoinColumn(name = "USER_ID", nullable = false, updatable = false) }
+            joinColumns = {@JoinColumn(name = "TASK_ID", nullable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "USER_ID", nullable = false, updatable = false)}
     )
     private Set<User> users = new HashSet<>();
 
@@ -54,10 +54,6 @@ public class Task {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getCode() {
