@@ -101,8 +101,10 @@ public class TaskServiceImpl implements TaskService {
     public Task save(String userSession, TaskForm newTask) throws UserNotFoundException, TaskFoundException {
         log.info("taskService: save begin... ");
         if (StringUtils.isNotEmpty(userSession)) {
-            if (null != taskRepository.findTaskByCode(newTask.getCode()))
+            if (null != taskRepository.findTaskByCode(newTask.getCode())) {
+                log.info("taskService: save ...end - no task found!");
                 throw new TaskFoundException(newTask.getCode());
+            }
             return saveTask(newTask, "save");
         } else {
             log.info("taskService: save ...end - no user found!");
@@ -141,8 +143,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private Task saveTask(TaskForm newTask, String method) {
-        Task task;
-        task = new Task(newTask.getName(), newTask.getDescription());
+        Task task = new Task(newTask.getName(), newTask.getDescription());
         User user;
         Set<User> associatedUsers = new HashSet<>();
         for (UserForm currentUser : newTask.getUsers()) {
